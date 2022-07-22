@@ -2,30 +2,29 @@
 // https://dzone.com/articles/working-with-documents-using-elastic-search-and-no
 global.signin = () => {}
 const { Client } = require('@elastic/elasticsearch')
-const commandLineArgs = require('command-line-args');
+// const commandLineArgs = require('command-line-args');
 //const optionDefinitions = [
    // { name: 'cluster_ip', alias: 'c',type: String,multiple: true },
  // {name: 'cluster_port', alias: 'i', type: String },
  // { name: 'test_name', alias: 't', type: String },
  // { name: 'protocol', alias: 'p', type: String }
 //]
-'use strict';
-var elkMainFunctions = require('./elkMainFunctions');
+//'use strict';
+//var elkMainFunctions = require('./elkMainFunctions');
 //import elkMainFunctions from 'elkMainFunctions.js';
-
 const client = new Client({
   nodes :["http://172.16.0.103:9200","http://172.16.0.227:9200","http://172.16.0.37:9200"],
-   maxRetries: 5,
+  maxRetries: 5,
   requestTimeout: 60000,
   sniffOnStart: true,
   apiVersion:'7.9'
-  });
+});
   // const { Sequelize, Model, DataTypes } = require('sequelize');
   // client.bulk(...) //Allows to perform multiple index/update/delete operations in a single request.
   // client.create(...) //Creates a new document in the index.
   // client.index(...) //Creates or updates a document in an index.
   // class for indices and docs
-//   class elk_main_functions  {
+  //   class elk_main_functions  {
 //     //   // first thing when calling this class is to check whether the index already exists or not
 // //   // if exists it will add the document
 // // inheritance beytkatab keda fe JS
@@ -51,7 +50,7 @@ const client = new Client({
 //         //        let data_filtered = Object.fromEntries(Object.entries(data).filter(([_, v]) => v != null));
 //         //    var data_filtered= Object.keys(data).forEach((k) => data[k] == null && delete data[k]);
 //         //  let data_filtered=data.filter(item => item!=='');
-// 	      //console.log(typeof(data),"entries:",Object.keys(data).forEach((k) =>data.k == null));
+//            //console.log(typeof(data),"entries:",Object.keys(data).forEach((k) =>data.k == null));
 //           //var data_filtered = data.reduce(function (obj, key){
 //           //    obj[key] ;
 //             //  return obj;
@@ -62,7 +61,7 @@ const client = new Client({
 //             return obj
 //           }, {});
 //           data_filtered= JSON.stringify(data_filtered);
-// 	  client.index({
+//        client.index({
 //       index: "test",
 //       body : data_filtered
 //     },function(err,resp){
@@ -82,11 +81,9 @@ const client = new Client({
 // };
 //var elk_function=new elk_functions();
 //var elk_main_functions= new elk_main_functions ();
-
   class elkreporter {
 
     constructor(newmanEmitter, reporterOptions, options) {
-      
       this.newmanEmitter = newmanEmitter;
       this.reporterOptions = reporterOptions;
       this.options = options;
@@ -108,30 +105,30 @@ const client = new Client({
         console.log('[+] Reporter Options', reporterOptions);
       }
 
-       this.context.protocol = this.reporterOptions.protocol;
-       this.context.jobid = this.reporterOptions.jobid;
-      this.context.pipelineid = this.reporterOptions.pipelineid;
-       this.context.port = this.reporterOptions.port;
-      this.context.clusterIPs = this.reporterOptions.clusterIPs.split(",");
+      this.context.protocol = this.reporterOptions.protocol;
+      this.context.jobid = this.reporterOptions.jobid;
+     this.context.pipelineid = this.reporterOptions.pipelineid;
+      this.context.port = this.reporterOptions.port;
+     this.context.clusterIPs = this.reporterOptions.clusterIPs.split(",");
 
 //console.log(this.context.protocol,this.context.clusterIPs,typeof(this.context.clusterIPs))
-     var protocol=this.context.protocol
-     var port=this.context.port
-     var nodes =this.context.clusterIPs.reduce(function (accumulator, ip) {
-                   accumulator.push(protocol+"://"+ip+":"+port)
-               return accumulator
-                        }, []);
+ //   var protocol=this.context.protocol
+  //  var port=this.context.port
+    // var nodes =this.context.clusterIPs.reduce(function (accumulator, ip) {
+    //               accumulator.push(protocol+"://"+ip+":"+port)
+    //           return accumulator
+    //                    }, []);
 //          console.log(this.context.protocol,nodes)
 //client = CLIENT({
-  //nodes : nodes ,
-    // maxRetries: 5,
-     //requestTimeout: 60000,
-    // sniffOnStart: true,
-     // apiVersion:'7.9'   });
+ //nodes : nodes ,
+   // maxRetries: 5,
+    //requestTimeout: 60000,
+   // sniffOnStart: true,
+    // apiVersion:'7.9'   });
 
 //console.log("hello",client,typeof(client))
-    }
 
+    }
     async start(error, args) {
       console.log(`[+] Starting collection: ${this.options.collection.name} ${this.context.id}`);
 
@@ -140,7 +137,7 @@ const client = new Client({
         //await this.result_table.sync();
         // check cluster health
         client.cluster.health({},function(err,response,status){
-          //console.log(response);
+          console.log(response);
          // console.log("status code is ",status);
 
         });
@@ -150,7 +147,6 @@ const client = new Client({
         console.log(err);
 
       }
-            //console.log("this is job_id",this.context.jobid);
     }
 
     beforeItem(error, args) {
@@ -183,7 +179,7 @@ const client = new Client({
     if (args.request.headers.reference['from'] ){
      // collec_name=(JSON.parse(data.request.headers)[0])
       //? JSON.parse(data.request.headers)[0]['value']: null;
-     collec_name=data.request.headers.reference['from'].toString().replace('PostmanHeader','');
+     collec_name=args.request.headers.reference['from'].toString().replace('PostmanHeader','');
       //console.log(collec_name.split(':')[1]);
       //console.log(typeof(collec_name));
       collec_name=this.options.collection.name+(collec_name.split(':')[1]).toString();
@@ -193,32 +189,32 @@ const client = new Client({
     collec_name=this.options.collection.name;
 
    }
-      const data = {
-        collection_name: collec_name,
-        service_name: request.url.host[0].toString(),
-        region:request.url.host.length ==5 ? request.url.host[1].toString(): "global",
-        date_of_response:args.response ? Date.parse((args.response.headers.toString().replace('PostmanHeader','').split('GMT')[0]).split("e:")[1]).toString(): null ,
-        newman_time: this.options.total,
-        request_name: item.name,
-        url: request.url.toString(),
-        method: request.method,
-         status: args.response ? args.response.status : null,
-        code: args.response ? args.response.code : null,
-        response_time: args.response ? args.response.responseTime : null,
-        response_size: args.response ? args.response.responseSize : null,
-        response: args.response ? args.response.stream.toString('utf-8') : null,
-        test_status: 'PASS',
-        assertions: 0,
-        failed_count: 0,
-        skipped_count: 0,
-        failed: '',
-        skipped: '',
-        iteration: cursor.iteration + 1,
-        newman_thread: this.options.globals.id,
-        date_test_script:timestamp,
-        timestamp:timestamp,
-        job_id: this.context.jobid,
-        pipeline_id :this.context.pipelineid
+   const data = {
+    collection_name: collec_name,
+    service_name: request.url.host[0].toString(),
+    region:request.url.host.length ==5 ? request.url.host[1].toString(): "global",
+    date_of_response:args.response ? Date.parse((args.response.headers.toString().replace('PostmanHeader','').split('GMT')[0]).split("e:")[1]).toString(): null ,
+    newman_time: this.options.total,
+    request_name: item.name,
+    url: request.url.toString(),
+    method: request.method,
+     status: args.response ? args.response.status : null,
+    code: args.response ? args.response.code : null,
+    response_time: args.response ? args.response.responseTime : null,
+    response_size: args.response ? args.response.responseSize : null,
+    response: args.response ? args.response.stream.toString('utf-8') : null,
+    test_status: 'PASS',
+    assertions: 0,
+    failed_count: 0,
+    skipped_count: 0,
+    failed: '',
+    skipped: '',
+    iteration: cursor.iteration + 1,
+    newman_thread: this.options.globals.id,
+    job_id: this.context.jobid,
+    pipeline_id :this.context.pipelineid,
+    date_test_script:timestamp,
+    timestamp:date
       };
 
       this.context.currentItem.data = data;
@@ -261,64 +257,71 @@ const client = new Client({
     }
 
     async item(error, args) {
-	     var data = this.context.currentItem.data;
-       var current_date=new Date();
-       this.indexName= current_date.toISOString().slice(0,8);
-      function  add_document(data,indexName){
-          //   data= JSON.stringify(data);
-        //        let data_filtered = Object.fromEntries(Object.entries(data).filter(([_, v]) => v != null));
-        //    var data_filtered= Object.keys(data).forEach((k) => data[k] == null && delete data[k]);
-        //  let data_filtered=data.filter(item => item!=='');
-	      //console.log(typeof(data),"entries:",Object.keys(data).forEach((k) =>data.k == null));
-          //var data_filtered = data.reduce(function (obj, key){
-          //    obj[key] ;
-            //  return obj;
-          //}, {});
-          var data=Object.entries(data).filter(([_, v]) => v != null);
-         var data_filtered=(data).reduce((obj, [key, val]) => {
-            obj[key] = val
-            return obj
-          }, {});
-          data_filtered= JSON.stringify(data_filtered);
-          //console.log("filter :",data_filtered,"original",data);
-          //    console.log(Object.keys(data),data_filtered);
-                  client.index({
-                  index: indexName,
-                  body : data_filtered
-                },function(err,resp){
-                  if(err){
-                    console.log(err);
-                  }
-                  else {
-                    console.log("doc is added ",resp);
-                  }
-                });
-    };
-    function  createindex(indexName){
-      return client.indices.create({
-        index: indexName
-      });
-      };
+      var data = this.context.currentItem.data;
+      var current_date=new Date();
+      this.indexName= current_date.toISOString().slice(0,8);
+     function  add_document(data,indexName){
+         //   data= JSON.stringify(data);
+       //        let data_filtered = Object.fromEntries(Object.entries(data).filter(([_, v]) => v != null));
+       //    var data_filtered= Object.keys(data).forEach((k) => data[k] == null && delete data[k]);
+       //  let data_filtered=data.filter(item => item!=='');
+             //console.log(typeof(data),"entries:",Object.keys(data).forEach((k) =>data.k == null));
+         //var data_filtered = data.reduce(function (obj, key){
+         //    obj[key] ;
+           //  return obj;
+         //}, {});
+         var data=Object.entries(data).filter(([_, v]) => v != null);
+        var data_filtered=(data).reduce((obj, [key, val]) => {
+           obj[key] = val
+           return obj
+         }, {});
+         data_filtered= JSON.stringify(data_filtered);
+         //console.log("filter :",data_filtered,"original",data);
+         //    console.log(Object.keys(data),data_filtered);
+                 client.index({
+                 index: indexName,
+                 body : data_filtered
+               },function(err,resp){
+                 if(err){
+                   console.log(err);
+                 }
+                 else {
+                   console.log("doc is added ",resp);
+                 }
+               });
+   };
+   function  createindex(indexName){
+     return client.indices.create({
+       index: indexName
+       ,
+       "mappings" : {
+        "properties": {
+        "timestamp": {
+            "type": "date",
+         "format": "YYYY-MM-DD"
+}}}
+     });
+     };
 
-            // var indexName=new Date();
-            //var indexName="test"
-         var date=new Date();
- var indexName= date.toISOString().slice(0,8);
+           // var indexName=new Date();
+           //var indexName="test"
+        var date=new Date();
+var indexName= date.toISOString().slice(0,8);
 
-  function indexExists(indexName){
-        return client.indices.exists({
-          index: indexName
-        },function(err,resp){
-          if(err){
-           createindex(indexName);
-                  add_document(data,indexName);
-          }
-          else {
-           add_document(data,indexName);
-          }
-        });
-      }
-      indexExists(indexName);
+ function indexExists(indexName){
+       return client.indices.exists({
+         index: indexName
+       },function(err,resp){
+         if(err){
+          createindex(indexName);
+                 add_document(data,indexName);
+         }
+         else {
+          add_document(data,indexName);
+         }
+       });
+     }
+     indexExists(indexName);
 // try{
 //   var tet= new elkMainFunctions();
 // console.log("class try :",typeof(tet.addDocument(data)));}
@@ -327,6 +330,7 @@ const client = new Client({
 // //console.log("documen catch:",elkMainFunctions.addDocument(data));
 // }
 //elkMainFunctions.add_document(data);
+   
     }
 
 
@@ -334,10 +338,5 @@ const client = new Client({
       console.log(`[+] Finished collection: ${this.options.collection.name} (${this.context.id})`);
     }
   };
-
   module.exports = elkreporter;
-
-
-
-
 
