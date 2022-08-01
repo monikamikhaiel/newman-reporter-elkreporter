@@ -26,7 +26,7 @@ constructor() {
         //        let data_filtered = Object.fromEntries(Object.entries(data).filter(([_, v]) => v != null));
         //    var data_filtered= Object.keys(data).forEach((k) => data[k] == null && delete data[k]);
         //  let data_filtered=data.filter(item => item!=='');
-	      //console.log(typeof(data),"entries:",Object.keys(data).forEach((k) =>data.k == null));
+              //console.log(typeof(data),"entries:",Object.keys(data).forEach((k) =>data.k == null));
           //var data_filtered = data.reduce(function (obj, key){
           //    obj[key] ;
             //  return obj;
@@ -37,7 +37,7 @@ constructor() {
             return obj
           }, {});
           data_filtered= JSON.stringify(data_filtered);
-	  client.index({
+          client.index({
       index: "test",
       body : data_filtered
     },function(err,resp){

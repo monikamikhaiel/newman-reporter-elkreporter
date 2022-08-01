@@ -1,48 +1,47 @@
 {
-    "_from": "newman-reporter-elkreporter",
-    "_id": "newman-reporter-elkreporter@1.2.8",
-    "_inBundle": false,
-    "_integrity": "sha512-1ezVfqesMV5hDQh3/RtpBktXxw4CaauYJXEldN0V1KxRIKsq4KGF7rwE5KDU7Ivr1LK14Vi5kbhOIQGWWOgJ6A==",
-    "_location": "/newman-reporter-elkreporter",
-    "_phantomChildren": {},
-    "_requested": {
-      "type": "tag",
-      "registry": true,
-      "raw": "newman-reporter-elkreporter",
-      "name": "newman-reporter-elkreporter",
-      "escapedName": "newman-reporter-elkreporter",
-      "rawSpec": "",
-      "saveSpec": null,
-      "fetchSpec": "latest"
-    },
-    "_requiredBy": [
-      "#USER"
-    ],
-    "_resolved": "https://registry.npmjs.org/newman-reporter-elkreporter/-/newman-reporter-elkreporter-1.2.8.tgz",
-    "_shasum": "7498caa8d50767cff4aeefa61a5bf9361a72f7d7",
-    "_spec": "newman-reporter-elkreporter",
-    "_where": "/home/cloud",
-    "author": "",
-    "bugs": {
-      "url": "https://github.com/monikamikhaiel/newman-reporter-elkreporter/issues"
-    },
-    "bundleDependencies": false,
-    "dependencies": {
-      "@elastic/elasticsearch": "~7.12.0"
-    },
-    "deprecated": false,
-    "description": "",
-    "homepage": "https://github.com/monikamikhaiel/newman-reporter-elkreporter#readme",
-    "license": "ISC",
-    "main": "index.js",
+  "_from": "newman-reporter-elkreporter",
+  "_id": "newman-reporter-elkreporter@1.2.7",
+  "_inBundle": false,
+  "_integrity": "sha512-1C4ewBtO02FD8jLZQ5sPi+ILpSJTiTTxNiOmuJeGi8uFL3N2cpIO6EGGbv87SLcI8ewFylumI7JJn4xOe4D0mg==",
+  "_location": "/newman-reporter-elkreporter",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "newman-reporter-elkreporter",
     "name": "newman-reporter-elkreporter",
-    "repository": {
-      "type": "git",
-      "url": "git+https://github.com/monikamikhaiel/newman-reporter-elkreporter.git"
-    },
-    "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "version": "1.2.12"
-  }
-  
+    "escapedName": "newman-reporter-elkreporter",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "https://registry.npmjs.org/newman-reporter-elkreporter/-/newman-reporter-elkreporter-1.2.7.tgz",
+  "_shasum": "35f3a1a7b9d91963bd74b4109a5210a36705bd90",
+  "_spec": "newman-reporter-elkreporter",
+  "_where": "/usr/local/lib/node_modules",
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/monikamikhaiel/newman-reporter-elkreporter/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "@elastic/elasticsearch": "~7.12.0"
+  },
+  "deprecated": false,
+  "description": "",
+  "homepage": "https://github.com/monikamikhaiel/newman-reporter-elkreporter#readme",
+  "license": "ISC",
+  "main": "index.js",
+  "name": "newman-reporter-elkreporter",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/monikamikhaiel/newman-reporter-elkreporter.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.2.16"
+}

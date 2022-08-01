@@ -189,11 +189,14 @@ const client = new Client({
     collec_name=this.options.collection.name;
 
    }
+            // regex to match the region
+//          var region=request.url.host.replace(RegExp("(.*)(eu-west-?)"),`{{$1}}`));
+//region:request.url.host.length ==5 ? request.url.host[1].toString(): "global",
    const data = {
     collection_name: collec_name,
     service_name: request.url.host[0].toString(),
-    region:request.url.host.length ==5 ? request.url.host[1].toString(): "global",
-    date_of_response:args.response ? Date.parse((args.response.headers.toString().replace('PostmanHeader','').split('GMT')[0]).split("e:")[1]).toString(): null ,
+    region:request.url.host.join("").match("eu-west-.?")?request.url.host.join("").match("eu-west-.?")[0]:"global",
+    date_of_response:args.response ? parseInt(Date.parse((args.response.headers.toString().replace('PostmanHeader','').split('GMT')[0]).split("e:")[1]).toString()): null ,
     newman_time: this.options.total,
     request_name: item.name,
     url: request.url.toString(),
@@ -211,14 +214,15 @@ const client = new Client({
     skipped: '',
     iteration: cursor.iteration + 1,
     newman_thread: this.options.globals.id,
+   // date_test_script:timestamp,
+    timestamp:date,
     job_id: this.context.jobid,
-    pipeline_id :this.context.pipelineid,
-    date_test_script:timestamp,
-    timestamp:date
+    pipeline_id :this.context.pipelineid
       };
 
       this.context.currentItem.data = data;
       this.context.currentItem.name = item.name;
+//     console.log("hello",typeof(data.date_of_response),data)
     }
  script(error, args){
    // the test is more accurate in the request
@@ -259,7 +263,7 @@ const client = new Client({
     async item(error, args) {
       var data = this.context.currentItem.data;
       var current_date=new Date();
-      this.indexName= current_date.toISOString().slice(0,8);
+      this.indexName= current_date.toISOString().slice(0,10);
      function  add_document(data,indexName){
          //   data= JSON.stringify(data);
        //        let data_filtered = Object.fromEntries(Object.entries(data).filter(([_, v]) => v != null));
@@ -283,30 +287,31 @@ const client = new Client({
                  body : data_filtered
                },function(err,resp){
                  if(err){
-                   console.log(err);
+                   console.log("add the doc error ",err);
                  }
                  else {
                    console.log("doc is added ",resp);
                  }
                });
    };
+
    function  createindex(indexName){
      return client.indices.create({
        index: indexName
-       ,
-       "mappings" : {
-        "properties": {
-        "timestamp": {
-            "type": "date",
-         "format": "YYYY-MM-DD"
-}}}
+            // ,
+     //  "mappings" : {
+     //   "properties": {
+     //   "timestamp": {
+        //    "type": "date",
+      //   "format": "YYYY-MM-DD"
+//}}}
      });
      };
 
            // var indexName=new Date();
            //var indexName="test"
         var date=new Date();
-var indexName= date.toISOString().slice(0,8);
+var indexName= date.toISOString().slice(0,10);
 
  function indexExists(indexName){
        return client.indices.exists({
@@ -330,7 +335,7 @@ var indexName= date.toISOString().slice(0,8);
 // //console.log("documen catch:",elkMainFunctions.addDocument(data));
 // }
 //elkMainFunctions.add_document(data);
-   
+
     }
 
 
