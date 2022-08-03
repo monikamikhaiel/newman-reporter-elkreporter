@@ -24,61 +24,6 @@ const client = new Client({
   // client.create(...) //Creates a new document in the index.
   // client.index(...) //Creates or updates a document in an index.
   // class for indices and docs
-  //   class elk_main_functions  {
-//     //   // first thing when calling this class is to check whether the index already exists or not
-// //   // if exists it will add the document
-// // inheritance beytkatab keda fe JS
-// constructor() {
-// // this.client=client;
-//   //this.current_date=new Date();
-//   //this.indexName= current_date.toISOString().slice(0,8);
-//  //var indexName="test";
-//   //   function indexExists(indexName){
-//     // console.log("class init")
-//         return client.indices.exists({
-//         index: "test"
-//       },function(err,resp){
-//         if(err){
-//         createindex(indexName);
-//     //    }
-//       }});
-// }
-// static add_document(data){
-//     // filter out null values| none
-//     //data= JSON.stringify(data);
-//      //   data= JSON.stringify(data);
-//         //        let data_filtered = Object.fromEntries(Object.entries(data).filter(([_, v]) => v != null));
-//         //    var data_filtered= Object.keys(data).forEach((k) => data[k] == null && delete data[k]);
-//         //  let data_filtered=data.filter(item => item!=='');
-//            //console.log(typeof(data),"entries:",Object.keys(data).forEach((k) =>data.k == null));
-//           //var data_filtered = data.reduce(function (obj, key){
-//           //    obj[key] ;
-//             //  return obj;
-//           //}, {});
-//           var data=Object.entries(data).filter(([_, v]) => v != null);
-//          var data_filtered=(data).reduce((obj, [key, val]) => {
-//             obj[key] = val
-//             return obj
-//           }, {});
-//           data_filtered= JSON.stringify(data_filtered);
-//        client.index({
-//       index: "test",
-//       body : data_filtered
-//     },function(err,resp){
-//       if(err){
-//         console.log(err);
-//       }
-//       else {
-//         console.log("doc is added ",resp);
-//       }
-//     });
-//   };
-//    static createindex(){
-//     return client.indices.create({
-//       index: "test"
-//     });
-//     };
-// };
 //var elk_function=new elk_functions();
 //var elk_main_functions= new elk_main_functions ();
   class elkreporter {
@@ -112,19 +57,22 @@ const client = new Client({
      this.context.clusterIPs = this.reporterOptions.clusterIPs.split(",");
 
 //console.log(this.context.protocol,this.context.clusterIPs,typeof(this.context.clusterIPs))
- //   var protocol=this.context.protocol
-  //  var port=this.context.port
-    // var nodes =this.context.clusterIPs.reduce(function (accumulator, ip) {
-    //               accumulator.push(protocol+"://"+ip+":"+port)
-    //           return accumulator
-    //                    }, []);
+//https://stackoverflow.com/questions/44170941/unhandledpromiserejectionwarning-unhandled-promise-rejection-rejection-id-22
+            //awaait makes the reporter unreadable by newman, that is probably not compatible with node version
+        //  var protocol=this.context.protocol
+        //  var port=this.context.port
+        //  var nodes =this.context.clusterIPs.reduce(function (accumulator, ip) {
+        //            accumulator.push(protocol+"://"+ip+":"+port)
+        //       return accumulator
+        //                 }, []);
 //          console.log(this.context.protocol,nodes)
-//client = CLIENT({
- //nodes : nodes ,
-   // maxRetries: 5,
-    //requestTimeout: 60000,
-   // sniffOnStart: true,
-    // apiVersion:'7.9'   });
+// this.client =  new Client({
+
+//          nodes : nodes ,
+//          maxRetries: 5,
+//          requestTimeout: 60000,
+//          sniffOnStart: true,
+//           apiVersion:'7.9'   });
 
 //console.log("hello",client,typeof(client))
 
@@ -137,8 +85,8 @@ const client = new Client({
         //await this.result_table.sync();
         // check cluster health
         client.cluster.health({},function(err,response,status){
-          console.log(response);
-         // console.log("status code is ",status);
+       //      response= json.parse(response);
+       console.log("the cluster "+ response.body.cluster_name + " health status is " + response.body.status  +"response code is "+response.statusCode);         // console.log("status code is ",status);
 
         });
 
@@ -262,8 +210,8 @@ const client = new Client({
 
     async item(error, args) {
       var data = this.context.currentItem.data;
-      var current_date=new Date();
-      this.indexName= current_date.toISOString().slice(0,10);
+    //   var current_date=new Date();
+    //   this.indexName= current_date.toISOString().slice(0,10);
      function  add_document(data,indexName){
          //   data= JSON.stringify(data);
        //        let data_filtered = Object.fromEntries(Object.entries(data).filter(([_, v]) => v != null));
@@ -282,51 +230,54 @@ const client = new Client({
          data_filtered= JSON.stringify(data_filtered);
          //console.log("filter :",data_filtered,"original",data);
          //    console.log(Object.keys(data),data_filtered);
-                 client.index({
-                 index: indexName,
-                 body : data_filtered
-               },function(err,resp){
-                 if(err){
-                   console.log("add the doc error ",err);
-                 }
-                 else {
-                   console.log("doc is added ",resp);
-                 }
-               });
-   };
+         client.index({
+            index: indexName,
+            body : data_filtered
+          },function(err,resp){
+            if(err){
+              console.log("add the doc error "+err+" response Code is "+err.statusCode);
+            }
+            else {
+              console.log("doc is added in indexname "+resp.body._index + " document id is "+resp.body._id
+              + " response code is "+ resp.statusCode  );
+            }
+          });
+};
 
-   function  createindex(indexName){
-     return client.indices.create({
-       index: indexName
-            // ,
-     //  "mappings" : {
-     //   "properties": {
-     //   "timestamp": {
-        //    "type": "date",
-      //   "format": "YYYY-MM-DD"
+function  createindex(indexName){
+ client.indices.create({
+  index: indexName
+       // ,
+//  "mappings" : {
+//   "properties": {
+//   "timestamp": {
+   //    "type": "date",
+ //   "format": "YYYY-MM-DD"
 //}}}
-     });
-     };
+},function(err,response,status){
+console.log("creation of index succeded -> index Name : " +response + "response code"+ response.statusCode);
+})};
 
-           // var indexName=new Date();
-           //var indexName="test"
-        var date=new Date();
+      // var indexName=new Date();
+      //var indexName="test"
+   var date=new Date();
 var indexName= date.toISOString().slice(0,10);
-
- function indexExists(indexName){
-       return client.indices.exists({
-         index: indexName
-       },function(err,resp){
-         if(err){
-          createindex(indexName);
-                 add_document(data,indexName);
-         }
-         else {
-          add_document(data,indexName);
-         }
-       });
-     }
-     indexExists(indexName);
+//indexName="fei-2022-08"
+       indexName="fei-"+indexName;
+function indexExists(indexName){
+  return client.indices.exists({
+    index: indexName
+  },function(err,resp){
+    if(err){
+     createindex(indexName);
+            add_document(data,indexName);
+    }
+    else {
+     add_document(data,indexName);
+    }
+  });
+}
+indexExists(indexName);
 // try{
 //   var tet= new elkMainFunctions();
 // console.log("class try :",typeof(tet.addDocument(data)));}
