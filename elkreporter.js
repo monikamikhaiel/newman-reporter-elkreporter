@@ -1,4 +1,5 @@
 
+
 // https://dzone.com/articles/working-with-documents-using-elastic-search-and-no
 global.signin = () => {}
 const { Client } = require('@elastic/elasticsearch')
@@ -142,7 +143,7 @@ const client = new Client({
 //region:request.url.host.length ==5 ? request.url.host[1].toString(): "global",
    const data = {
     collection_name: collec_name,
-    service_name: request.url.host[0].toString(),
+    service_name: request.url.host[0].length >9?request.url.host[1].toString():request.url.host[0].toString(),
     region:request.url.host.join("").match("eu-west-.?")?request.url.host.join("").match("eu-west-.?")[0]:"global",
     date_of_response:args.response ? parseInt(Date.parse((args.response.headers.toString().replace('PostmanHeader','').split('GMT')[0]).split("e:")[1]).toString()): null ,
     newman_time: this.options.total,
@@ -165,7 +166,9 @@ const client = new Client({
    // date_test_script:timestamp,
     timestamp:date,
     job_id: this.context.jobid,
-    pipeline_id :this.context.pipelineid
+    pipeline_id :this.context.pipelineid,
+    httprequestid: args.cursor.httpRequestId ? args.cursor.httpRequestId : null
+
       };
 
       this.context.currentItem.data = data;
@@ -295,4 +298,3 @@ indexExists(indexName);
     }
   };
   module.exports = elkreporter;
-
