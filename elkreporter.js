@@ -1,5 +1,4 @@
 
-
 // https://dzone.com/articles/working-with-documents-using-elastic-search-and-no
 global.signin = () => {}
 const { Client } = require('@elastic/elasticsearch')
@@ -141,6 +140,27 @@ const client = new Client({
             // regex to match the region
 //          var region=request.url.host.replace(RegExp("(.*)(eu-west-?)"),`{{$1}}`));
 //region:request.url.host.length ==5 ? request.url.host[1].toString(): "global",
+// Match the pod / AZ  in Request Body /Response Body / url
+var response=args.response.stream.toString('utf-8');
+var url=request.url.toString('utf-8');
+var body=args.request.body?args.request.body.raw.toString('utf-8'):""
+var matching=[response,body,url];
+//for (var i =0;i<matching.length;i++){
+ // if (matching[i].match("eu-west-.?[a-z]") != null){
+ // console.log(matching[i].match("eu-west-.?[a-z]")[0]);}
+// //  console.log(matching[i],typeof(matching[i]));
+ // break;
+ // }
+ // else {
+  //  continue
+ // }
+//}
+var az=matching.map(function(text){
+        return text.match("eu-west-.?[a-z]")?text.match("eu-west-.?[a-z]")[0]:null})
+var pod=matching.map(function(text){
+        return text.match("pod?[0-9]")?text.match("pod?[0-9]")[0]:null})
+console.log(az,pod);
+// args.response?args.response.match("eu-west-.?[a-z]"):
    const data = {
     collection_name: collec_name,
     service_name: request.url.host[0].length >9?request.url.host[1].toString():request.url.host[0].toString(),
@@ -167,8 +187,9 @@ const client = new Client({
     timestamp:date,
     job_id: this.context.jobid,
     pipeline_id :this.context.pipelineid,
-    httprequestid: args.cursor.httpRequestId ? args.cursor.httpRequestId : null
-
+    httprequestid: args.cursor.httpRequestId ? args.cursor.httpRequestId : null,
+    az:az[0]!=null?az[0]: null,
+    pod:pod[0]!=null?pod[0]: null
       };
 
       this.context.currentItem.data = data;
@@ -298,3 +319,6 @@ indexExists(indexName);
     }
   };
   module.exports = elkreporter;
+
+
+
