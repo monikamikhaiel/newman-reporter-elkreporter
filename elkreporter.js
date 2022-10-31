@@ -45,7 +45,7 @@ const client = new Client({
       };
       const events = 'start beforeItem item request script assertion exception done'.split(' ');
       events.forEach((e) => { if (typeof this[e] == 'function') newmanEmitter.on(e, (err, args) => this[e](err, args)) });
-
+//                                                                               EVentname(error, arg) => Run function called ..... (error,rgs)
       if (this.context.debug) {
         console.log('[+] Reporter Options', reporterOptions);
       }
@@ -131,7 +131,7 @@ const client = new Client({
       //console.log(collec_name.split(':')[1]);
       //console.log(typeof(collec_name));
       collec_name=this.options.collection.name+(collec_name.split(':')[1]).toString();
-
+                // collection name + the value of the header 
    }
    else{
     collec_name=this.options.collection.name;
@@ -143,7 +143,7 @@ const client = new Client({
 // Match the pod / AZ  in Request Body /Response Body / url
 var response=args.response.stream.toString('utf-8');
 var url=request.url.toString('utf-8');
-var body=args.request.body?args.request.body.raw.toString('utf-8'):""
+var body=request.body?request.body.raw.toString('utf-8'):"";
 var matching=[response,body,url];
 //for (var i =0;i<matching.length;i++){
  // if (matching[i].match("eu-west-.?[a-z]") != null){
@@ -166,7 +166,7 @@ console.log(az,pod);
     service_name: request.url.host[0].length >9?request.url.host[1].toString():request.url.host[0].toString(),
     region:request.url.host.join("").match("eu-west-.?")?request.url.host.join("").match("eu-west-.?")[0]:"global",
     date_of_response:args.response ? parseInt(Date.parse((args.response.headers.toString().replace('PostmanHeader','').split('GMT')[0]).split("e:")[1]).toString()): null ,
-    newman_time: this.options.total,
+    newman_time: this.options.total, //http://www.postmanlabs.com/postman-collection/Response.html#.definition
     request_name: item.name,
     url: request.url.toString(),
     method: request.method,
@@ -182,13 +182,14 @@ console.log(az,pod);
     failed: '',
     skipped: '',
     iteration: cursor.iteration + 1,
-    newman_thread: this.options.globals.id,
+    newman_thread: this.options.globals.id, // the same value accross he collection
    // date_test_script:timestamp,
     timestamp:date,
     job_id: this.context.jobid,
     pipeline_id :this.context.pipelineid,
     httprequestid: args.cursor.httpRequestId ? args.cursor.httpRequestId : null,
     az:az[0]!=null?az[0]: null,
+    az_request_body:az[1]!=null?az[1]: null,
     pod:pod[0]!=null?pod[0]: null
       };
 
