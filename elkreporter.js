@@ -12,13 +12,13 @@ const { Client } = require('@elastic/elasticsearch')
 //'use strict';
 //var elkMainFunctions = require('./elkMainFunctions');
 //import elkMainFunctions from 'elkMainFunctions.js';
-const client = new Client({
-  nodes :["http://172.16.0.103:9200","http://172.16.0.227:9200","http://172.16.0.37:9200"],
-  maxRetries: 5,
-  requestTimeout: 60000,
-  sniffOnStart: true,
-  apiVersion:'7.9'
-});
+// let client = new Client({
+//   nodes :["http://172.16.0.103:9200"],
+//   maxRetries: 5,
+//   requestTimeout: 60000,
+//   sniffOnStart: true,
+//   apiVersion:'7.9'
+// });
   // const { Sequelize, Model, DataTypes } = require('sequelize');
   // client.bulk(...) //Allows to perform multiple index/update/delete operations in a single request.
   // client.create(...) //Creates a new document in the index.
@@ -40,60 +40,53 @@ const client = new Client({
           failed: [],
           skipped: []
         },
-        list: [],
-        debug: this.reporterOptions.sqlDebug || this.reporterOptions.debug || false
+        list: []
+        //,
+      //  debug: this.reporterOptions.sqlDebug || this.reporterOptions.debug || false
       };
       const events = 'start beforeItem item request script assertion exception done'.split(' ');
       events.forEach((e) => { if (typeof this[e] == 'function') newmanEmitter.on(e, (err, args) => this[e](err, args)) });
 //                                                                               EVentname(error, arg) => Run function called ..... (error,rgs)
-      if (this.context.debug) {
-        console.log('[+] Reporter Options', reporterOptions);
-      }
+      // if (this.context.debug) {
+      //   console.log('[+] Reporter Options', reporterOptions);
+      // }
 
-      this.context.protocol = this.reporterOptions.protocol;
+      //this.context.protocol = this.reporterOptions.protocol;
       this.context.jobid = this.reporterOptions.jobid;
      this.context.pipelineid = this.reporterOptions.pipelineid;
-      this.context.port = this.reporterOptions.port;
-     this.context.clusterIPs = this.reporterOptions.clusterIPs.split(",");
+      //this.context.port = this.reporterOptions.port;
+     //this.context.clusterips = this.reporterOptions.clusterips;
+     this.context.clusterendpoint = this.reporterOptions.clusterendpoint.split(","); // ; 
+     this.context.indexname = this.reporterOptions.indexname;
+    //  console.log(this.context.clusterendpoint,this.context.indexname, this.reporterOptions.indexname);
+    //  console.log(this.context.clusterendpoint,typeof(this.context.clusterendpoint), this.context.clusterendpoint.split(","));
 
-//console.log(this.context.protocol,this.context.clusterIPs,typeof(this.context.clusterIPs))
-//https://stackoverflow.com/questions/44170941/unhandledpromiserejectionwarning-unhandled-promise-rejection-rejection-id-22
-            //awaait makes the reporter unreadable by newman, that is probably not compatible with node version
-        //  var protocol=this.context.protocol
-        //  var port=this.context.port
-        //  var nodes =this.context.clusterIPs.reduce(function (accumulator, ip) {
-        //            accumulator.push(protocol+"://"+ip+":"+port)
-        //       return accumulator
-        //                 }, []);
-//          console.log(this.context.protocol,nodes)
-// this.client =  new Client({
-
-//          nodes : nodes ,
-//          maxRetries: 5,
-//          requestTimeout: 60000,
-//          sniffOnStart: true,
-//           apiVersion:'7.9'   });
-
+     //console.log("hello params",this.context.clusterips,this.context.pipelineid,this.context.port);
+     // establish connection 
+     this.context.client = new Client({
+      nodes :this.context.clusterendpoint,
+      maxRetries: 5,
+      requestTimeout: 60000,
+      sniffOnStart: true,
+      apiVersion:'7.9'
+       });
+  //"http://172.16.0.103:9200";"http://172.16.0.227:9200";"http://172.16.0.37:9200"
 //console.log("hello",client,typeof(client))
-
+//  client.nodes=["http://172.16.0.103:9200","http://172.16.0.227:9200","http://172.16.0.37:9200"];
+//  console.log("hello",client.nodes);
     }
     async start(error, args) {
       console.log(`[+] Starting collection: ${this.options.collection.name} ${this.context.id}`);
-
       try {
-
         //await this.result_table.sync();
         // check cluster health
-        client.cluster.health({},function(err,response,status){
+        this.context.client.cluster.health({},function(err,response,status){
        //      response= json.parse(response);
        console.log("the cluster "+ response.body.cluster_name + " health status is " + response.body.status  +"response code is "+response.statusCode);         // console.log("status code is ",status);
-
         });
-
       } catch (err) {
         //console.log('[-] ERROR:', this.context.debug ? error : error.message);
         console.log(err);
-
       }
     }
 
@@ -160,6 +153,7 @@ var az=matching.map(function(text){
 var pod=matching.map(function(text){
         return text.match("pod?[0-9]")?text.match("pod?[0-9]")[0]:null})
 console.log(az,pod);
+//console.log(this.options);
 // args.response?args.response.match("eu-west-.?[a-z]"):
    const data = {
     collection_name: collec_name,
@@ -197,13 +191,12 @@ console.log(az,pod);
       this.context.currentItem.name = item.name;
 //     console.log("hello",typeof(data.date_of_response),data)
     }
- script(error, args){
+    script(error, args){
    // the test is more accurate in the request
- }
-          exception(error, args) {
+    }
+    exception(error, args) {
       // TODO:
     }
-
     assertion(error, args) {
       this.context.currentItem.data.assertions++;
 
@@ -235,9 +228,10 @@ console.log(az,pod);
 
     async item(error, args) {
       var data = this.context.currentItem.data;
+     // var x    = this.context.indexname;
     //   var current_date=new Date();
     //   this.indexName= current_date.toISOString().slice(0,10);
-     function  add_document(data,indexName){
+     function  add_document(data,indexName,client){
          //   data= JSON.stringify(data);
        //        let data_filtered = Object.fromEntries(Object.entries(data).filter(([_, v]) => v != null));
        //    var data_filtered= Object.keys(data).forEach((k) => data[k] == null && delete data[k]);
@@ -267,10 +261,10 @@ console.log(az,pod);
               + " response code is "+ resp.statusCode  );
             }
           });
-};
+     };
 
-function  createindex(indexName){
- client.indices.create({
+     function  createindex(indexName,client){
+  client.indices.create({
   index: indexName
        // ,
 //  "mappings" : {
@@ -280,29 +274,40 @@ function  createindex(indexName){
  //   "format": "YYYY-MM-DD"
 //}}}
 },function(err,response,status){
-console.log("creation of index succeded -> index Name : " +response + "response code"+ response.statusCode);
-})};
+  if (err){
+    console.log("creation of index failed -> ERROR " +err);
+  }
+  else{
+    console.log("creation of index succeded -> index Name : " +response + "response code"+ response.statusCode);
+  }
+     })};
 
       // var indexName=new Date();
       //var indexName="test"
-   var date=new Date();
-var indexName= date.toISOString().slice(0,10);
-//indexName="fei-2022-08"
-       indexName="fei-"+indexName;
-function indexExists(indexName){
+        var date=new Date();
+        var indexName= date.toISOString().slice(0,10);
+      //indexName="fei-2022-08"
+      indexName="fei-"+indexName;
+      // indexName=this.context.indexname;
+      // console.log("indexName: ",indexName);
+      // console.log("indexName: ",this.context.indexname);
+    //  console.log("indexName: ",x);
+
+function indexExists(indexName,client){
+  console.log(indexName)
   return client.indices.exists({
     index: indexName
   },function(err,resp){
     if(err){
-     createindex(indexName);
-            add_document(data,indexName);
+     createindex(indexName,client);
+     add_document(data,indexName,client);
     }
     else {
-     add_document(data,indexName);
+     add_document(data,indexName,client);
     }
   });
 }
-indexExists(indexName);
+indexExists(this.context.indexname, this.context.client);
 // try{
 //   var tet= new elkMainFunctions();
 // console.log("class try :",typeof(tet.addDocument(data)));}
@@ -311,15 +316,9 @@ indexExists(indexName);
 // //console.log("documen catch:",elkMainFunctions.addDocument(data));
 // }
 //elkMainFunctions.add_document(data);
-
     }
-
-
     done() {
       console.log(`[+] Finished collection: ${this.options.collection.name} (${this.context.id})`);
     }
   };
   module.exports = elkreporter;
-
-
-
