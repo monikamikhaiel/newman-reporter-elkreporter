@@ -1,6 +1,6 @@
 Inspired by https://github.com/tomaszsluszniak/newman-reporter-sql
 
-this script insert the data in ELK CLuster currently the cluster IPS are hardcoded 
+this script insert the data in ELK CLuster , index name and cluster info are passed as cmdline paramteres 
 the index template should be ready as the following curl
 ## How to use ? 
     newman run CSBS.postman_collection.json  -e Auto-Prod-Paris.postman_environment.json -r elkreporter --reporter-protocol http  --reporter-clusterendpoint http://172.16.0.103:9200,http://172.16.0.227:9200,http://172.16.0.37:9200 --reporter-indexname monika-` date +"%Y-%m-%d"`  --reporter-jobid "$CI_JOB_ID" --reporter-pipelineid "$CI_PIPELINE_ID"
