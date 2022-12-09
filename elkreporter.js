@@ -134,7 +134,7 @@ const { Client } = require('@elastic/elasticsearch')
 //          var region=request.url.host.replace(RegExp("(.*)(eu-west-?)"),`{{$1}}`));
 //region:request.url.host.length ==5 ? request.url.host[1].toString(): "global",
 // Match the pod / AZ  in Request Body /Response Body / url
-var response=args.response.stream.toString('utf-8');
+var response=args.response?args.response.stream.toString('utf-8'):"";
 var url=request.url.toString('utf-8');
 var body=request.body?request.body.raw.toString('utf-8'):"";
 var matching=[response,body,url];
