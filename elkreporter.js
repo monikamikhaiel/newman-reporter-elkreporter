@@ -56,13 +56,13 @@ const { Client } = require('@elastic/elasticsearch')
      this.context.pipelineid = this.reporterOptions.pipelineid;
       //this.context.port = this.reporterOptions.port;
      //this.context.clusterips = this.reporterOptions.clusterips;
-     this.context.clusterendpoint = this.reporterOptions.clusterendpoint.split(","); // ; 
+     this.context.clusterendpoint = this.reporterOptions.clusterendpoint.split(","); // ;
      this.context.indexname = this.reporterOptions.indexname;
     //  console.log(this.context.clusterendpoint,this.context.indexname, this.reporterOptions.indexname);
     //  console.log(this.context.clusterendpoint,typeof(this.context.clusterendpoint), this.context.clusterendpoint.split(","));
 
      //console.log("hello params",this.context.clusterips,this.context.pipelineid,this.context.port);
-     // establish connection 
+     // establish connection
      this.context.client = new Client({
       nodes :this.context.clusterendpoint,
       maxRetries: 5,
@@ -103,7 +103,7 @@ const { Client } = require('@elastic/elasticsearch')
 
     request(error, args) {
       const { cursor, item, request } = args;
-      var date      = new Date();
+      var date      = new Date(new Date().toLocaleString({timeZone: 'Africa/Cairo'}));
       var timestamp = date.getTime();
       console.log(`[${this.context.currentItem.index}] Running ${item.name}`);
     //   var collec_name;
@@ -124,7 +124,7 @@ const { Client } = require('@elastic/elasticsearch')
       //console.log(collec_name.split(':')[1]);
       //console.log(typeof(collec_name));
       collec_name=this.options.collection.name+(collec_name.split(':')[1]).toString();
-                // collection name + the value of the header 
+                // collection name + the value of the header
    }
    else{
     collec_name=this.options.collection.name;
@@ -134,6 +134,7 @@ const { Client } = require('@elastic/elasticsearch')
 //          var region=request.url.host.replace(RegExp("(.*)(eu-west-?)"),`{{$1}}`));
 //region:request.url.host.length ==5 ? request.url.host[1].toString(): "global",
 // Match the pod / AZ  in Request Body /Response Body / url
+//var response=args.response.stream.toString('utf-8');
 var response=args.response?args.response.stream.toString('utf-8'):"";
 var url=request.url.toString('utf-8');
 var body=request.body?request.body.raw.toString('utf-8'):"";
@@ -159,7 +160,7 @@ console.log(az,pod);
     collection_name: collec_name,
     service_name: request.url.host[0].length >9?request.url.host[1].toString():request.url.host[0].toString(),
     region:request.url.host.join("").match("eu-west-.?")?request.url.host.join("").match("eu-west-.?")[0]:"global",
-    date_of_response:args.response ? parseInt(Date.parse((args.response.headers.toString().replace('PostmanHeader','').split('GMT')[0]).split("e:")[1]).toString()): null ,
+    date_of_response:args.response ? new Date(args.response.headers.toString().replace('PostmanHeader','').split("\r\n")[0].split("Date:")[1]): null ,
     newman_time: this.options.total, //http://www.postmanlabs.com/postman-collection/Response.html#.definition
     request_name: item.name,
     url: request.url.toString(),
@@ -189,7 +190,8 @@ console.log(az,pod);
 
       this.context.currentItem.data = data;
       this.context.currentItem.name = item.name;
-//     console.log("hello",typeof(data.date_of_response),data)
+     // console.log("hello",typeof(data.date_of_response),data.date_of_response)
+ //     console.log(length(data.date_of_response))
     }
     script(error, args){
    // the test is more accurate in the request
